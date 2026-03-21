@@ -1,0 +1,5 @@
+{
+  "name": "FitGenie AI Coach",
+  "description": "An AI-powered fitness and nutrition coach that analyzes InBody scans and creates personalized workout and diet plans.",
+  "requestFramePermissions": []
+}
