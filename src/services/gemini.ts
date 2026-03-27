@@ -35,6 +35,11 @@ export async function generateFitnessPlan(prefs: UserPreferences): Promise<Fitne
        - "Breakfast" and "Lunch" should be appropriately sized. Lunch can contain heavy meats (chicken, beef, etc.).
        - "Dinner" MUST be light. DO NOT include heavy meats like beef or chicken in Dinner. Fish or Tuna is acceptable for Dinner, along with salads, eggs, or cottage cheese.
        - Include the estimated calories for each meal.
+    6. PERFORMANCE RULES (CRITICAL):
+       - Keep the analysisSummary VERY SHORT (1-2 sentences max).
+       - Keep all exercise instructions EXTREMELY SHORT (1 brief sentence max).
+       - Keep meal suggestions brief.
+       - This is to ensure the plan generates quickly without timing out.
     
     Respond strictly in JSON format matching the provided schema.
     IMPORTANT: Write all text content (analysis, instructions, meal names, suggestions, etc.) in ${prefs.language === 'ar' ? 'Arabic' : 'English'}.

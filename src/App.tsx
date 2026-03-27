@@ -22,10 +22,25 @@ export default function App() {
   const [language, setLanguage] = useState<Language>('ar');
   const [isMonthlyUpdate, setIsMonthlyUpdate] = useState(false);
 
+  const [loadingTextIdx, setLoadingTextIdx] = useState(0);
+
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
   }, [theme, language]);
+
+  useEffect(() => {
+    if (isLoading) {
+      const texts = language === 'ar' 
+        ? ['جاري تحليل بياناتك...', 'تصميم خطة التمرين...', 'تجهيز النظام الغذائي...', 'اللمسات الأخيرة...']
+        : ['Analyzing your data...', 'Designing workout plan...', 'Preparing diet plan...', 'Final touches...'];
+      
+      const interval = setInterval(() => {
+        setLoadingTextIdx(prev => (prev + 1) % texts.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading, language]);
 
   const t = i18n[language];
 
@@ -72,6 +87,10 @@ export default function App() {
   );
 
   if (isLoading) {
+    const loadingTexts = language === 'ar' 
+      ? ['جاري تحليل بياناتك...', 'تصميم خطة التمرين...', 'تجهيز النظام الغذائي...', 'اللمسات الأخيرة...']
+      : ['Analyzing your data...', 'Designing workout plan...', 'Preparing diet plan...', 'Final touches...'];
+
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-4 text-zinc-900 dark:text-zinc-100 font-sans transition-colors duration-300">
         <Controls />
@@ -80,7 +99,9 @@ export default function App() {
           transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
           className="w-24 h-24 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full mb-8"
         />
-        <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400 mb-2">{t.analyzing}</h2>
+        <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400 mb-2">
+          {loadingTexts[loadingTextIdx]}
+        </h2>
         <p className="text-zinc-600 dark:text-zinc-400 text-center max-w-md">
           {t.analyzingDesc}
         </p>

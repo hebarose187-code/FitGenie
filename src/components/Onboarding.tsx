@@ -34,17 +34,44 @@ export default function Onboarding({ onComplete, language, isMonthlyUpdate, init
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setPreviewUrl(base64String);
-        
-        const match = base64String.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
-        if (match) {
-          setPrefs(prev => ({
-            ...prev,
-            inbodyMimeType: match[1],
-            inbodyImage: match[2]
-          }));
-        }
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1024;
+          const MAX_HEIGHT = 1024;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          const base64String = canvas.toDataURL(file.type || 'image/jpeg', 0.8);
+          setPreviewUrl(base64String);
+          
+          const match = base64String.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
+          if (match) {
+            setPrefs(prev => ({
+              ...prev,
+              inbodyMimeType: match[1],
+              inbodyImage: match[2]
+            }));
+          }
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
